@@ -695,3 +695,21 @@ body { font-family: "Baloo 2", sans-serif; overflow: hidden; background: var(--g
 /* svg icons inherit gold */
 .aw-ico svg, .aw-streak-ico svg { width: 1em; height: 1em; fill: var(--gold); filter: drop-shadow(0 0 8px var(--gold-glow)); }
 .aw-streak-ico svg { width: 1.1em; height: 1.1em; }
+
+/* bookshelf v5 - Vihaan folds: locked-book stacks, whole-word titles */
+.bs-stack { flex-direction: row; align-items: flex-end; gap: clamp(10px,1.4vh,16px); }
+.bs-soon { width: clamp(60px,7.6vh,100px); aspect-ratio: 0.68; border-radius: var(--item-radius);
+  border: clamp(2px,.35vh,4px) dashed var(--dim); display: grid; place-items: center;
+  background: rgba(255,255,255,.04); opacity: .85; }
+.bs-soon-star { width: 42%; aspect-ratio: 1; }
+.bs-soon-star svg { width: 100%; height: 100%; fill: var(--dim); }
+.screen[data-screen="bookshelf"] .bs-title { max-width: 16.5ch; word-break: normal; overflow-wrap: break-word; }
+.screen[data-screen="bookshelf"] .bs-book:not(.focus) .bs-title { -webkit-line-clamp: 1; white-space: nowrap; text-overflow: ellipsis; }
+.screen[data-screen="bookshelf"] .bs-book.focus .bs-title { -webkit-line-clamp: 3; font-size: clamp(13px,1.8vh,19px); }
+
+/* bookshelf v6 - Inaaya folds: fill the shelf, whole-word titles */
+.screen[data-screen="bookshelf"] .bs-books { justify-content: space-evenly; gap: clamp(14px,1.8vw,40px); padding-left: 0; }
+.screen[data-screen="bookshelf"] .bs-book:not(.focus) .bs-title { -webkit-line-clamp: 2; white-space: normal; max-width: 100%; }
+.screen[data-screen="bookshelf"] .bs-title { max-width: 100%; }
+/* bookshelf v7 - pick badge pinned onto the cover, not floating */
+.bs-pick { top: clamp(5px,.9vh,10px); right: clamp(5px,.9vh,10px); }

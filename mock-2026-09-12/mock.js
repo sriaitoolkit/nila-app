@@ -450,12 +450,12 @@ const bookshelfBeat = `<div class="screen" data-screen="bookshelf">${sky}${brand
     <span class="bs-slots"><span class="bs-slot filled">${STAR}</span><span class="bs-slot filled">${STAR}</span><span class="bs-slot empty">${STAR}</span></span>
     <span class="bs-pickhint">1 more to choose</span></div>
   <div class="bs-case">
-    <div class="bs-row"><div class="bs-rowlabel">Fun &amp; Giggles</div>
-      <div class="bs-books">${bsBook(CARDS.fort)}${bsBook(CARDS.snack2)}${bsBook(CARDS.dream)}<div class="bs-stack"><span></span><span></span><span></span></div></div><div class="bs-plank"></div></div>
+    <div class="bs-row"><div class="bs-rowlabel">Fun &amp; Games</div>
+      <div class="bs-books">${bsBook(CARDS.fort)}${bsBook(CARDS.snack2)}${bsBook(CARDS.dream)}<div class="bs-stack"><div class="bs-soon"><span class="bs-soon-star">${STAR}</span></div><div class="bs-soon"><span class="bs-soon-star">${STAR}</span></div></div></div><div class="bs-plank"></div></div>
     <div class="bs-row"><div class="bs-rowlabel">Friends &amp; Family</div>
-      <div class="bs-books">${bsBook(CARDS.retell, "picked")}${bsBook(CARDS.notice)}<div class="bs-stack two"><span></span><span></span></div></div><div class="bs-plank"></div></div>
+      <div class="bs-books">${bsBook(CARDS.retell, "picked")}${bsBook(CARDS.notice)}<div class="bs-stack"><div class="bs-soon"><span class="bs-soon-star">${STAR}</span></div><div class="bs-soon"><span class="bs-soon-star">${STAR}</span></div></div></div><div class="bs-plank"></div></div>
     <div class="bs-row"><div class="bs-rowlabel">Out &amp; About</div>
-      <div class="bs-books">${bsBook(CARDS.explore)}${bsBook(CARDS.water)}${bsBook(CARDS.snack, "focus picked")}</div><div class="bs-plank"></div></div>
+      <div class="bs-books">${bsBook(CARDS.explore)}${bsBook(CARDS.water)}${bsBook(CARDS.snack, "focus picked")}<div class="bs-stack"><div class="bs-soon"><span class="bs-soon-star">${STAR}</span></div></div></div><div class="bs-plank"></div></div>
   </div></div>`;
 
 
@@ -468,7 +468,7 @@ const AWARDS = [
   { cat: "Body & Move",       icon: "<svg viewBox=\"0 0 24 24\"><path d=\"M13 2 4 14h6l-1 8 9-12h-6l1-8z\"/></svg>", rungs: ["Busy Bee", "Mighty Mover", "UNSTOPPABLE"], stars: 55, next: 150 },
   { cat: "Think & Solve",     icon: "<svg viewBox=\"0 0 24 24\"><path d=\"M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.7c.6.5 1 1.4 1 2.3h6c0-.9.4-1.8 1-2.3A7 7 0 0 0 12 2z\"/></svg>", rungs: ["Puzzle Hunter", "Brain Spark", "GRAND MASTERMIND"], stars: 31, next: 50 },
   { cat: "Numbers & Shapes",  icon: "<svg viewBox=\"0 0 24 24\"><path d=\"M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z\"/></svg>", rungs: ["Number Ninja", "Shape Wizard", "MATH CHAMPION"], stars: 12, next: 20 },
-  { cat: "Make & Create",     icon: PENCIL, rungs: ["Little Maker", "Inventor", "MASTER BUILDER"], stars: 64, next: 150 },
+  { cat: "Make & Create",     icon: PENCIL, rungs: ["Tinker", "Inventor", "MASTER BUILDER"], stars: 64, next: 150 },
   { cat: "World & Wonder",    icon: STAR, rungs: ["Curious Explorer", "Brave Adventurer", "WONDER OF THE WORLD"], stars: 41, next: 50 },
 ];
 function rungName(a) { return a.stars >= 150 ? a.rungs[2] : a.stars >= 50 ? a.rungs[1] : a.stars >= 20 ? a.rungs[0] : ""; }
@@ -495,7 +495,7 @@ const badgesBeat = `<div class="screen" data-screen="badges">${sky}${brand}
       <div class="aw-hero-name">MIGHTY MOVER</div>
       <div class="aw-hero-sub">Body &amp; Move &middot; earned yesterday</div>
       <div class="aw-nudge">
-        <div class="aw-nudge-t">2 more telling sessions to</div>
+        <div class="aw-nudge-t">2 more stories to</div>
         <div class="aw-nudge-big">STORY SPINNER</div>
         <div class="aw-bar big"><div class="aw-fill" style="width:96%"></div></div>
         <div class="aw-nudge-n">48 of 50 &#11088;</div>
