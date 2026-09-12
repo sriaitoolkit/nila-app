@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nila mock - click-through</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root { --bar: 64px; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; background: #16120e; font-family: "Baloo 2", system-ui, sans-serif; color: #f3ead9; }
+  body { display: flex; flex-direction: column; }
+  .bar { min-height: var(--bar); display: flex; align-items: center; gap: 14px; padding: 8px 16px; flex-wrap: wrap;
+         background: #201a14; border-bottom: 1px solid #3a2f22; }
+  .bar .logo { font-weight: 800; font-size: 18px; letter-spacing: .02em; }
+  .bar .logo small { display: block; font-size: 11px; font-weight: 600; color: #b8a888; }
+  .themes { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill { border: 1.5px solid #5a4a34; background: #2a221a; color: #e8dcc4; border-radius: 999px;
+          padding: 5px 13px; font: 700 13px/1 "Baloo 2", sans-serif; cursor: pointer; }
+  .pill.on { background: #f0b44c; border-color: #f0b44c; color: #231a08; }
+  .pill .cand { font-weight: 600; font-size: 10px; opacity: .75; }
+  .nav { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .nav button { border: 1.5px solid #5a4a34; background: #2a221a; color: #e8dcc4; border-radius: 10px;
+                padding: 7px 14px; font: 700 14px "Baloo 2", sans-serif; cursor: pointer; }
+  .nav button:disabled { opacity: .35; cursor: default; }
+  .beat-name { font-size: 14px; font-weight: 700; color: #f0b44c; min-width: 150px; text-align: center; }
+  .beat-name small { display: block; font-size: 10.5px; font-weight: 600; color: #b8a888; }
+  .stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 14px; min-height: 0; }
+  .tv { width: min(100%, calc((100vh - var(--bar) - 60px) * 16 / 9)); aspect-ratio: 16/9; background: #000;
+        border-radius: 14px; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,.55); }
+  .tv.phone { width: min(400px, calc((100vh - var(--bar) - 60px) * 390 / 844)); aspect-ratio: 390/844; }
+  iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
+  .dots { display: flex; gap: 5px; justify-content: center; padding: 4px 0 10px; flex-wrap: wrap; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #4a3d2c; cursor: pointer; border: 0; padding: 0; }
+  .dot.on { background: #f0b44c; transform: scale(1.25); }
+  .dot.parent { border-radius: 3px; }
+  .hint { font-size: 11px; color: #8f7f63; text-align: center; padding-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="logo">Nila mock<small>design click-through - Sep 12 v2.1 - concept render, not wired to a backend</small></div>
+  <div class="themes" id="themes"></div>
+  <div class="nav">
+    <button id="prev">&#8592; Back</button>
+    <div class="beat-name" id="beatName"></div>
+    <button id="next">Next &#8594;</button>
+  </div>
+</div>
+<div class="stage"><div class="tv" id="frame"><iframe id="view" title="Nila mock beat"></iframe></div></div>
+<div class="dots" id="dots"></div>
+<div class="hint">Arrow keys or the Back/Next buttons move through the flow. Round dots are the kid's TV screens; square dots are the parent's phone screens. Switch themes any time - same beat, different world.</div>
+<script>
+const THEMES = [
+  { id: "clay",      name: "A - Clay Room", ship: true },
+  { id: "lantern",   name: "C - Lantern Trail", ship: true },
+  { id: "blocks",    name: "D - Block Row", cand: true },
+  { id: "storybook", name: "B - Storybook", cand: true },
+  { id: "garden",    name: "E - Garden", cand: true },
+];
+const BEATS = [
+  ["picker", "Profile picker", "kid / TV"],
+  ["shelf", "Card shelf", "kid / TV"],
+  ["detail", "Card detail", "kid / TV"],
+  ["quiz", "Quiz", "kid / TV"],
+  ["celebration", "Celebration", "kid / TV"],
+  ["endings", "Card endings", "kid / TV"],
+  ["undo", "Undo a done card", "kid / TV"],
+  ["store", "Star store", "kid / TV"],
+  ["redeem-confirm", "Redeem: confirm", "kid / TV"],
+  ["redeem-reserved", "Redeem: waiting on Amma", "kid / TV"],
+  ["redeem-fulfilled", "Redeem: approved", "kid / TV"],
+  ["parent-create", "Nila drafts a card", "parent / phone"],
+  ["parent-review", "Morning review", "parent / phone"],
+  ["parent-fulfill", "Reward approval", "parent / phone"],
+  ["parent-digest", "Week digest", "parent / phone"],
+];
+const qs = new URLSearchParams(location.search);
+let theme = qs.get("theme") || "clay";
+let beat = Math.min(Math.max(parseInt(qs.get("beat") || "0", 10) || 0, 0), BEATS.length - 1);
+const $ = (id) => document.getElementById(id);
+const themesEl = $("themes"), dotsEl = $("dots");
+THEMES.forEach((t) => {
+  const b = document.createElement("button");
+  b.className = "pill"; b.dataset.id = t.id;
+  b.innerHTML = t.name + (t.ship ? ' <span class="cand">- SHIPS</span>' : (t.cand ? ' <span class="cand">- killed at kid gate, for the record</span>' : ""));
+  b.onclick = () => { theme = t.id; render(); };
+  themesEl.appendChild(b);
+});
+BEATS.forEach(([id, name], i) => {
+  const d = document.createElement("button");
+  d.className = "dot" + (id.startsWith("parent-") ? " parent" : "");
+  d.title = name; d.onclick = () => { beat = i; render(); };
+  dotsEl.appendChild(d);
+});
+$("prev").onclick = () => { if (beat > 0) { beat--; render(); } };
+$("next").onclick = () => { if (beat < BEATS.length - 1) { beat++; render(); } };
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight" && beat < BEATS.length - 1) { beat++; render(); }
+  if (e.key === "ArrowLeft" && beat > 0) { beat--; render(); }
+});
+function render() {
+  const [id, name, side] = BEATS[beat];
+  $("view").src = `index.html?theme=${theme}&screen=${id}`;
+  $("frame").classList.toggle("phone", id.startsWith("parent-"));
+  $("beatName").innerHTML = `${name}<small>${side} - beat ${beat + 1} of ${BEATS.length}</small>`;
+  $("prev").disabled = beat === 0;
+  $("next").disabled = beat === BEATS.length - 1;
+  [...themesEl.children].forEach((b) => b.classList.toggle("on", b.dataset.id === theme));
+  [...dotsEl.children].forEach((d, i) => d.classList.toggle("on", i === beat));
+  history.replaceState(null, "", `?theme=${theme}&beat=${beat}`);
+  document.title = `Nila mock - ${theme} - ${name}`;
+}
+render();
+</script>
+</body>
+</html>
