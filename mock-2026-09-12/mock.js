@@ -433,11 +433,36 @@ const garden = {
 };
 
 const THEMES = { clay, storybook, lantern: lanternT, blocks, garden };
+
+/* ---------- BOOKSHELF (founder 2026-09-12: themed shelves, kid picks 3/week) ---------- */
+function bsBook(c, cls = "") {
+  const picked = cls.includes("picked");
+  return `<div class="bs-book ${cls} ${c.sketch ? "sketch" : ""}">
+    ${picked ? `<span class="bs-pick">${STAR}</span>` : ""}
+    ${c.sketch ? `<span class="bs-pencil">${PENCIL}</span>` : ""}
+    <img class="bs-art" src="${c.img}" alt="" />
+    <div class="bs-title">${c.t}</div>
+  </div>`;
+}
+const bookshelfBeat = `<div class="screen" data-screen="bookshelf">${sky}${brand}
+  <h1 class="title-shelf">Ms. S's bookshelf</h1>${hud}
+  <div class="bs-pickbar"><span class="bs-picklabel">Pick your 3 for the week</span>
+    <span class="bs-slots"><span class="bs-slot filled">${STAR}</span><span class="bs-slot filled">${STAR}</span><span class="bs-slot empty">${STAR}</span></span>
+    <span class="bs-pickhint">1 more to choose</span></div>
+  <div class="bs-case">
+    <div class="bs-row"><div class="bs-rowlabel">Fun &amp; Giggles</div>
+      <div class="bs-books">${bsBook(CARDS.fort)}${bsBook(CARDS.snack2)}${bsBook(CARDS.dream)}<div class="bs-stack"><span></span><span></span><span></span></div></div><div class="bs-plank"></div></div>
+    <div class="bs-row"><div class="bs-rowlabel">Friends &amp; Family</div>
+      <div class="bs-books">${bsBook(CARDS.retell, "picked")}${bsBook(CARDS.notice)}<div class="bs-stack two"><span></span><span></span></div></div><div class="bs-plank"></div></div>
+    <div class="bs-row"><div class="bs-rowlabel">Out &amp; About</div>
+      <div class="bs-books">${bsBook(CARDS.explore)}${bsBook(CARDS.water)}${bsBook(CARDS.snack, "focus picked")}</div><div class="bs-plank"></div></div>
+  </div></div>`;
+
 const SHARED = { undo: undoBeat, endings: endingsBeat,
   "redeem-confirm": redeemBeat("redeem-confirm"), "redeem-reserved": redeemBeat("redeem-reserved"),
   "redeem-fulfilled": redeemBeat("redeem-fulfilled"),
   "parent-create": parentBeat("parent-create"), "parent-fulfill": parentBeat("parent-fulfill"),
-  "parent-digest": parentBeat("parent-digest"), "parent-review": parentBeat("parent-review") };
+  "parent-digest": parentBeat("parent-digest"), "parent-review": parentBeat("parent-review"), bookshelf: bookshelfBeat };
 
 const q = new URLSearchParams(location.search);
 const theme = q.get("theme") || "clay";

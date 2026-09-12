@@ -555,3 +555,93 @@ body { font-family: "Baloo 2", sans-serif; overflow: hidden; background: var(--g
   radial-gradient(3px 3px at 40% 72%, rgba(255,236,150,.6), transparent 100%),
   radial-gradient(3px 3px at 78% 66%, rgba(255,236,150,.6), transparent 100%),
   radial-gradient(3px 3px at 22% 80%, rgba(255,236,150,.55), transparent 100%); }
+
+/* ============ BOOKSHELF (shared, themed by vars) ============ */
+.bs-pickbar { display: flex; align-items: center; gap: clamp(18px,2.4vw,44px); z-index: 1;
+  margin-top: clamp(6px,1.4vh,16px); }
+.bs-picklabel { font-size: clamp(22px,3.2vh,34px); font-weight: 800; color: var(--cream); }
+.bs-pickhint { font-size: clamp(16px,2.2vh,24px); font-weight: 700; color: var(--calm); }
+.bs-slots { display: flex; gap: clamp(8px,1vh,14px); }
+.bs-slot { width: clamp(30px,4.4vh,46px); aspect-ratio: 1; display: grid; place-items: center; }
+.bs-slot svg { width: 100%; height: 100%; }
+.bs-slot.filled svg { fill: var(--gold); filter: drop-shadow(0 0 10px var(--gold-glow)); }
+.bs-slot.empty svg { fill: transparent; stroke: var(--dim); stroke-width: 7; animation: bspulse 2.2s ease-in-out infinite; }
+@keyframes bspulse { 0%,100% { opacity: .45; } 50% { opacity: 1; } }
+
+.bs-case { flex: 1; min-height: 0; width: 100%; display: flex; flex-direction: column;
+  justify-content: space-evenly; padding: 0 clamp(40px,6vw,140px); z-index: 1; }
+.bs-row { position: relative; }
+.bs-rowlabel { font-size: clamp(17px,2.4vh,26px); font-weight: 800; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--calm); margin-bottom: clamp(4px,.8vh,10px); }
+.bs-books { display: flex; align-items: flex-end; gap: clamp(22px,2.6vw,54px);
+  padding-left: clamp(6px,1vw,20px); }
+.bs-plank { height: clamp(12px,1.8vh,20px); border-radius: 6px; margin-top: -2px;
+  background: linear-gradient(var(--lift), var(--ground)); box-shadow: 0 10px 22px rgba(0,0,0,.4); }
+.bs-book { position: relative; width: clamp(120px,14.5vh,190px); cursor: default;
+  border-radius: var(--item-radius); }
+.bs-art { width: 100%; aspect-ratio: 0.68; object-fit: cover; display: block;
+  border-radius: var(--item-radius); box-shadow: var(--art-shadow);
+  border-left: clamp(5px,.9vh,9px) solid rgba(0,0,0,.28); }
+.bs-title { font-size: clamp(13px,1.7vh,18px); font-weight: 700; line-height: 1.25;
+  color: var(--cream); margin-top: clamp(5px,.9vh,10px); max-width: 100%; }
+.bs-pick { position: absolute; top: clamp(-12px,-1.6vh,-8px); right: clamp(-12px,-1.6vh,-8px); z-index: 2;
+  width: clamp(34px,5vh,52px); aspect-ratio: 1; background: var(--tag-bg); border-radius: 50%;
+  display: grid; place-items: center; box-shadow: 0 6px 16px rgba(0,0,0,.35); }
+.bs-pick svg { width: 64%; height: 64%; fill: var(--gold); }
+.bs-pencil { position: absolute; top: 8%; right: 8%; width: 22%; aspect-ratio: 1; }
+.bs-pencil svg { width: 100%; height: 100%; }
+.bs-book.sketch .bs-art { filter: saturate(.55) brightness(.92); }
+.bs-book.focus { transform: translateY(clamp(-24px,-3.2vh,-14px)) scale(1.07); z-index: 2; }
+.bs-book.focus .bs-art { outline: clamp(4px,.6vh,6px) solid var(--ring); outline-offset: clamp(3px,.5vh,5px); }
+.bs-book.focus .bs-title { font-weight: 800; }
+
+/* theme flourishes */
+.theme-lantern .bs-plank { background: linear-gradient(90deg, transparent, rgba(255,214,130,.5) 18%, rgba(255,214,130,.5) 82%, transparent);
+  box-shadow: 0 0 26px rgba(255,196,90,.3); height: clamp(4px,.7vh,8px); }
+.theme-lantern .bs-rowlabel { color: var(--gold); text-shadow: 0 0 12px rgba(255,210,77,.45); }
+.theme-lantern .bs-book.focus .bs-art { box-shadow: 0 0 0 3px rgba(255,214,130,.5), 0 0 44px rgba(255,196,90,.45), 0 18px 30px rgba(0,0,0,.5); }
+.theme-storybook .bs-plank { border-radius: 2px; }
+.theme-blocks .bs-plank { border-radius: 0; }
+
+/* bookshelf v2 - fit all three rows, bigger books */
+.bs-pickbar { margin-top: clamp(2px,.6vh,8px); gap: clamp(14px,1.8vw,34px); }
+.bs-picklabel { font-size: clamp(19px,2.6vh,28px); }
+.bs-pickhint { font-size: clamp(14px,1.9vh,20px); }
+.bs-slot { width: clamp(26px,3.6vh,38px); }
+.bs-case { justify-content: space-evenly; padding: 0 clamp(30px,4.5vw,110px); }
+.bs-rowlabel { font-size: clamp(15px,2vh,22px); margin-bottom: clamp(2px,.5vh,6px); }
+.bs-books { gap: clamp(26px,3.4vw,68px); }
+.bs-book { width: auto; }
+.bs-art { height: clamp(140px,19.5vh,240px); width: auto; aspect-ratio: 0.68; }
+.bs-title { font-size: clamp(12px,1.55vh,17px); margin-top: clamp(3px,.6vh,7px); max-width: 15ch; }
+.bs-plank { height: clamp(9px,1.4vh,15px); }
+.bs-book.focus { transform: translateY(clamp(-18px,-2.4vh,-10px)) scale(1.06); }
+.bs-book.focus .bs-art { outline-width: clamp(3px,.5vh,5px); }
+.bs-stack { align-self: flex-end; display: flex; flex-direction: column-reverse; gap: clamp(4px,.7vh,8px);
+  margin-left: clamp(8px,1vw,20px); padding-bottom: 2px; }
+.bs-stack span { display: block; height: clamp(13px,1.9vh,20px); border-radius: 4px;
+  background: linear-gradient(90deg, var(--lift), var(--dim)); box-shadow: 0 4px 10px rgba(0,0,0,.35); }
+.bs-stack span:nth-child(1) { width: clamp(90px,11vh,140px); }
+.bs-stack span:nth-child(2) { width: clamp(70px,9vh,115px); }
+.bs-stack span:nth-child(3) { width: clamp(100px,12vh,150px); }
+.bs-stack.two span:nth-child(1) { width: clamp(85px,10vh,130px); }
+.theme-lantern .bs-stack span { background: linear-gradient(90deg, #241d52, #4a3f8a); box-shadow: 0 0 16px rgba(120,100,220,.3); }
+
+/* bookshelf v3 - fit budget */
+.screen[data-screen="bookshelf"] { padding-top: clamp(14px,2.6vh,34px); padding-bottom: clamp(10px,1.8vh,24px); }
+.screen[data-screen="bookshelf"] .title-shelf { font-size: clamp(26px,4.2vh,46px); }
+.screen[data-screen="bookshelf"] .bs-case { justify-content: flex-start; gap: clamp(12px,2.2vh,26px); padding-top: clamp(6px,1vh,14px); }
+.screen[data-screen="bookshelf"] .bs-art { height: clamp(150px,19vh,230px); }
+.screen[data-screen="bookshelf"] .bs-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 14ch; }
+.screen[data-screen="bookshelf"] .bs-rowlabel { margin-bottom: clamp(2px,.4vh,5px); }
+
+/* bookshelf v4 - final fit */
+.screen[data-screen="bookshelf"] .bs-art { height: clamp(140px,17vh,200px); }
+.screen[data-screen="bookshelf"] .bs-case { gap: clamp(8px,1.6vh,18px); }
+.screen[data-screen="bookshelf"] .bs-rowlabel { font-size: clamp(13px,1.7vh,19px); }
+.screen[data-screen="bookshelf"] .bs-plank { height: clamp(8px,1.1vh,12px); margin-top: clamp(2px,.4vh,5px); }
+.screen[data-screen="bookshelf"] .bs-title { font-size: clamp(11px,1.45vh,16px); }
+.screen[data-screen="bookshelf"] .hud { margin-top: clamp(2px,.5vh,6px); }
+.screen[data-screen="bookshelf"] .bs-art { height: clamp(135px,16.2vh,190px); }
+.screen[data-screen="bookshelf"] .bs-case { padding-top: 0; }
+.screen[data-screen="bookshelf"] .bs-pickbar { margin-top: 0; }

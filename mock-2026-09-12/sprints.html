@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nila - Design Sprints</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; font-family: "Baloo 2", system-ui, sans-serif; background: #14110d; color: #f3ead9; }
+  body { display: flex; }
+  nav { width: 320px; min-width: 320px; background: #1d1812; border-right: 1px solid #3a2f22;
+        display: flex; flex-direction: column; padding: 22px 0; }
+  nav h1 { font-size: 21px; font-weight: 800; padding: 0 22px 4px; }
+  nav .sub { font-size: 12px; color: #b8a888; padding: 0 22px 18px; border-bottom: 1px solid #3a2f22; }
+  .sp { display: block; text-decoration: none; color: inherit; padding: 16px 22px; border-bottom: 1px solid #2a2218; cursor: pointer; }
+  .sp:hover { background: #26201a; }
+  .sp.on { background: #2c241a; border-left: 4px solid #f0b44c; padding-left: 18px; }
+  .sp .n { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #f0b44c; }
+  .sp .t { font-size: 16px; font-weight: 800; margin-top: 2px; }
+  .sp .d { font-size: 12px; color: #b8a888; margin-top: 3px; line-height: 1.4; }
+  .sp.soon { opacity: .55; cursor: default; }
+  .sp.soon .n { color: #8f7f63; }
+  main { flex: 1; min-width: 0; display: flex; }
+  iframe { flex: 1; border: 0; background: #14110d; }
+  .placeholder { flex: 1; display: grid; place-items: center; text-align: center; color: #b8a888; }
+  .placeholder .big { font-size: 26px; font-weight: 800; color: #f3ead9; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<nav>
+  <h1>Nila - Design Sprints</h1>
+  <div class="sub">A new drop every 2-3 hours. Pick a sprint; its mocks load on the right. Everything is a concept render you can click.</div>
+  <div id="list"></div>
+</nav>
+<main id="main"></main>
+<script>
+const SPRINTS = [
+  { n: "Sprint 1", t: "Home page redesign", d: "Five theme directions x the full kid + parent flow. Clay Room and Lantern Trail ship; the other three were killed at the kid-critic gate and stay for the record. Includes the new bookshelf beat.",
+    url: "play.html" },
+  { n: "Sprint 2", t: "Gamification around badges", d: "Named awards that sound big, skill ladders, streak specials, the awards wall. In the pod right now - lands in this slot.",
+    url: null },
+];
+const list = document.getElementById("list"), main = document.getElementById("main");
+const q = new URLSearchParams(location.search);
+let cur = Math.min(Math.max(parseInt(q.get("sprint") || "1", 10) || 1, 1), SPRINTS.length);
+SPRINTS.forEach((s, i) => {
+  const a = document.createElement("a");
+  a.className = "sp" + (s.url ? "" : " soon") + (i + 1 === cur ? " on" : "");
+  a.innerHTML = `<div class="n">${s.n}${s.url ? "" : " - in sprint now"}</div><div class="t">${s.t}</div><div class="d">${s.d}</div>`;
+  if (s.url) a.onclick = () => { cur = i + 1; render(); history.replaceState(null, "", "?sprint=" + cur); };
+  list.appendChild(a);
+});
+function render() {
+  const s = SPRINTS[cur - 1];
+  [...list.children].forEach((el, i) => el.classList.toggle("on", i + 1 === cur));
+  main.innerHTML = s.url
+    ? `<iframe src="${s.url}" title="${s.t}"></iframe>`
+    : `<div class="placeholder"><div><div class="big">${s.n}: ${s.t}</div><div>In the pod right now - this slot fills when the sprint ships.</div></div></div>`;
+}
+render();
+</script>
+</body>
+</html>
