@@ -458,11 +458,61 @@ const bookshelfBeat = `<div class="screen" data-screen="bookshelf">${sky}${brand
       <div class="bs-books">${bsBook(CARDS.explore)}${bsBook(CARDS.water)}${bsBook(CARDS.snack, "focus picked")}</div><div class="bs-plank"></div></div>
   </div></div>`;
 
+
+/* ---------- BADGES / AWARDS WALL (founder 2026-09-12: named awards, skill ladders, streak specials) ----------
+   Ladder per reward-system spec R24/R25: 3 rungs per skill category at 20/50/150 counted stars.
+   Names escalate to HUGE (Khan cosmic-tier pattern); streak specials sit beside the ladders. */
+const AWARDS = [
+  { cat: "Talk & Say",        icon: "<svg viewBox=\"0 0 24 24\"><path d=\"M3 4h18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8l-5 4V6a2 2 0 0 1 2-2z\"/></svg>", rungs: ["Word Sprout", "Story Spinner", "MASTER OF TALES"], stars: 48, next: 50 },
+  { cat: "Feelings & Friends", icon: "<svg viewBox=\"0 0 24 24\"><path d=\"M12 21C6 16 2 12.3 2 8.6 2 5.9 4.1 4 6.6 4c2 0 3.9 1.1 5.4 3 1.5-1.9 3.4-3 5.4-3C19.9 4 22 5.9 22 8.6c0 3.7-4 7.4-10 12.4z\"/></svg>", rungs: ["Kind Heart", "Friendship Star", "HEART OF GOLD"], stars: 22, next: 50 },
+  { cat: "Body & Move",       icon: "<svg viewBox=\"0 0 24 24\"><path d=\"M13 2 4 14h6l-1 8 9-12h-6l1-8z\"/></svg>", rungs: ["Busy Bee", "Mighty Mover", "UNSTOPPABLE"], stars: 55, next: 150 },
+  { cat: "Think & Solve",     icon: "<svg viewBox=\"0 0 24 24\"><path d=\"M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.7c.6.5 1 1.4 1 2.3h6c0-.9.4-1.8 1-2.3A7 7 0 0 0 12 2z\"/></svg>", rungs: ["Puzzle Hunter", "Brain Spark", "GRAND MASTERMIND"], stars: 31, next: 50 },
+  { cat: "Numbers & Shapes",  icon: "<svg viewBox=\"0 0 24 24\"><path d=\"M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z\"/></svg>", rungs: ["Number Ninja", "Shape Wizard", "MATH CHAMPION"], stars: 12, next: 20 },
+  { cat: "Make & Create",     icon: PENCIL, rungs: ["Little Maker", "Inventor", "MASTER BUILDER"], stars: 64, next: 150 },
+  { cat: "World & Wonder",    icon: STAR, rungs: ["Curious Explorer", "Brave Adventurer", "WONDER OF THE WORLD"], stars: 41, next: 50 },
+];
+function rungName(a) { return a.stars >= 150 ? a.rungs[2] : a.stars >= 50 ? a.rungs[1] : a.stars >= 20 ? a.rungs[0] : ""; }
+function nextRung(a) { return a.stars >= 150 ? "" : a.stars >= 50 ? a.rungs[2] : a.stars >= 20 ? a.rungs[1] : a.rungs[0]; }
+function ladderRow(a, cls = "") {
+  const cur = rungName(a), nxt = nextRung(a);
+  const pct = a.stars >= 150 ? 100 : a.stars >= 50 ? 66 + (a.stars - 50) / 100 * 34 : a.stars >= 20 ? 33 + (a.stars - 20) / 30 * 33 : a.stars / 20 * 33;
+  return `<div class="aw-row ${cls}">
+    <span class="aw-ico">${a.icon}</span>
+    <div class="aw-main">
+      <div class="aw-cat">${a.cat}</div>
+      <div class="aw-rungs">${a.rungs.map(r => `<span class="aw-rung ${r === cur ? "cur" : ""} ${a.rungs.indexOf(r) < a.rungs.indexOf(cur || "~") ? "done" : ""}">${r}</span>`).join('<span class="aw-sep">&rarr;</span>')}</div>
+      <div class="aw-bar"><div class="aw-fill" style="width:${Math.round(pct)}%"></div></div>
+    </div>
+    <div class="aw-next">${nxt ? `${a.next - a.stars} &#11088; to<br/><b>${nxt}</b>` : '<b>TOP!</b>'}</div>
+  </div>`;
+}
+const badgesBeat = `<div class="screen" data-screen="badges">${sky}${brand}
+  <h1 class="title-shelf">Ms. S's awards</h1>
+  <div class="aw-wrap">
+    <div class="aw-hero">
+      <div class="aw-hero-label">Just earned!</div>
+      <div class="aw-medal">${STAR}</div>
+      <div class="aw-hero-name">MIGHTY MOVER</div>
+      <div class="aw-hero-sub">Body &amp; Move &middot; earned yesterday</div>
+      <div class="aw-nudge">
+        <div class="aw-nudge-t">2 more telling sessions to</div>
+        <div class="aw-nudge-big">STORY SPINNER</div>
+        <div class="aw-bar big"><div class="aw-fill" style="width:96%"></div></div>
+        <div class="aw-nudge-n">48 of 50 &#11088;</div>
+      </div>
+      <div class="aw-streaks">
+        <div class="aw-streak"><span class="aw-streak-ico"><svg viewBox="0 0 24 24"><path d="M12 2C8 8 5 11.5 5 15a7 7 0 0 0 14 0c0-3.5-3-7-7-13z"/></svg></span><div><div class="aw-streak-n">WATER WARRIOR</div><div class="aw-streak-d">6 days in a row!</div></div></div>
+        <div class="aw-streak"><span class="aw-streak-ico"><svg viewBox="0 0 24 24"><path d="M4 4h7v16H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm9 0h7a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-7V4z"/></svg></span><div><div class="aw-streak-n">BOOKWORM LEGEND</div><div class="aw-streak-d">18 of 30 reading days</div></div></div>
+      </div>
+    </div>
+    <div class="aw-ladders">${AWARDS.map(a => ladderRow(a)).join("")}</div>
+  </div></div>`;
+
 const SHARED = { undo: undoBeat, endings: endingsBeat,
   "redeem-confirm": redeemBeat("redeem-confirm"), "redeem-reserved": redeemBeat("redeem-reserved"),
   "redeem-fulfilled": redeemBeat("redeem-fulfilled"),
   "parent-create": parentBeat("parent-create"), "parent-fulfill": parentBeat("parent-fulfill"),
-  "parent-digest": parentBeat("parent-digest"), "parent-review": parentBeat("parent-review"), bookshelf: bookshelfBeat };
+  "parent-digest": parentBeat("parent-digest"), "parent-review": parentBeat("parent-review"), bookshelf: bookshelfBeat, badges: badgesBeat };
 
 const q = new URLSearchParams(location.search);
 const theme = q.get("theme") || "clay";
