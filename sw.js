@@ -1,125 +1,118 @@
-// Nila app-shell cache v8 (PM row 281 reliability hotfix). Navigations are
-// network-first so an installed TV cannot stay stranded on an old shell.
-// Lessons from the row-278 incident + checker synthetic repro: cleanup must
-// be deterministic POST-TAKEOVER (claim first, then delete retired keys, and
-// re-assert on the first fetch this worker serves), a retired worker must
-// never recreate its cache, and critical hashed assets are digest-validated
-// - bytes that do not match the deploy-stamped digest are never used.
-const SHELL = "nila-shell-v8";
+// nila-app shell service worker - v9 (PM rows 281/283)
+// Fixes the v8 launch blockers found by test-eng + the local swlab harness:
+//  - v8's retired check compared registration.active to self (the global
+//    scope) - ALWAYS true, so v8 passed every fetch to the network and never
+//    claimed, cleaned, or repaired anything. v9 gates on an activation flag
+//    plus a monotonic shell-version census: any newer nila-shell-vN cache
+//    means this worker lost and passes through with zero cache access.
+//  - cache repair is now provable: bad entry deleted, network bytes
+//    validated, verified clone recached, then READ BACK and re-hashed.
+//  - shell reads are scoped to the ACTIVE shell cache only, so a recreated
+//    retired cache (page or old worker) can never serve bytes.
+//  - retired-cache cleanup re-runs on navigations only when the census is
+//    dirty (bounded: one keys() call per navigation once healthy).
+const VERSION = 9;
+const SHELL = `nila-shell-v${VERSION}`;
 
-// Stamped at deploy time by scripts/deploy-guard (sha256 of the built bytes).
+// DEPLOY-GUARD STAMP REQUIRED: exact sha256 digests for the currently served
+// hashed assets, filled by scripts/deploy-guard/integrity.mjs at deploy time.
 const ASSET_INTEGRITY = {
-  "assets/index-1iw5b1kd.js":
-    "09a5ae493e678b15365676ecf7027fffd6d2a5da12c9e03feabae0c74d9e79fa",
-  "assets/index-CCTeDkKe.css":
-    "98e05696b3b222e554767d7d6795f7559689f0fb386ea4efff507babbc9bc5c4",
+  "assets/index-1iw5b1kd.js": "09a5ae493e678b15365676ecf7027fffd6d2a5da12c9e03feabae0c74d9e79fa",
+  "assets/index-CCTeDkKe.css": "98e05696b3b222e554767d7d6795f7559689f0fb386ea4efff507babbc9bc5c4"
 };
 
+function shellVersion(key) {
+  const m = /^nila-shell-v(\d+)$/.exec(key);
+  return m ? Number(m[1]) : 0;
+}
+async function newerShellExists() {
+  return (await caches.keys()).some((k) => shellVersion(k) > VERSION);
+}
+async function sha256Hex(buf) {
+  const d = await crypto.subtle.digest("SHA-256", buf);
+  return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+async function bytesValid(response, key) {
+  const expected = ASSET_INTEGRITY[key];
+  if (!expected) return true;
+  return (await sha256Hex(await response.clone().arrayBuffer())) === expected;
+}
+function integrityKey(url) {
+  const path = url.pathname.replace(/^\/nila-app\//, "");
+  return Object.prototype.hasOwnProperty.call(ASSET_INTEGRITY, path) ? path : null;
+}
 async function cleanupRetired() {
   const keys = await caches.keys();
   await Promise.all(
-    keys.filter((key) => key !== SHELL).map((key) => caches.delete(key)),
+    keys.filter((k) => shellVersion(k) > 0 && k !== SHELL).map((k) => caches.delete(k)),
   );
 }
-
-async function sha256hex(buffer) {
-  const digest = await crypto.subtle.digest("SHA-256", buffer);
-  return [...new Uint8Array(digest)]
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-function integrityKey(url) {
-  const path = url.pathname.replace(/^\/(nila-app\/)?/, "");
-  return Object.prototype.hasOwnProperty.call(ASSET_INTEGRITY, path)
-    ? path
-    : null;
-}
-
-async function bytesValid(response, key) {
-  const hex = await sha256hex(await response.clone().arrayBuffer());
-  return hex === ASSET_INTEGRITY[key];
-}
-
-// A retired worker (registration.active moved on) must never touch caches:
-// no reads it might poison, no writes that could recreate its dead shell.
-async function thisWorkerRetired() {
-  return self.registration.active !== self;
-}
-
-let postTakeoverCleanupDone = false;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(SHELL).then((cache) => cache.addAll(["./", "./index.html"])),
+    (async () => {
+      const cache = await caches.open(SHELL);
+      await cache.addAll(["./", "./index.html"]);
+      await self.skipWaiting();
+    })(),
   );
-  self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
-      // Deterministic order: take control of every client FIRST (an old
-      // worker stops receiving fetch events for claimed tabs, so it cannot
-      // re-poison), THEN delete retired caches.
+      if (await newerShellExists()) return; // a newer worker is taking over
       await self.clients.claim();
       await cleanupRetired();
-      postTakeoverCleanupDone = true;
     })(),
   );
 });
 
+async function serveAsset(event, url, key) {
+  const cache = await caches.open(SHELL); // ACTIVE shell only - never caches.match
+  const cached = await cache.match(event.request);
+  if (cached) {
+    if (!key || (await bytesValid(cached, key))) return cached;
+    await cache.delete(event.request); // exact bad entry deleted
+  }
+  const response = await fetch(event.request);
+  if (!response.ok) return response;
+  if (!url.pathname.includes("/assets/")) return response;
+  if (key && !(await bytesValid(response, key))) {
+    return new Response("nila asset failed integrity validation", { status: 502 });
+  }
+  // Recache a verified clone, then READ BACK and re-hash to prove the write
+  // landed before the event is allowed to finish.
+  await cache.put(event.request, response.clone());
+  const written = await cache.match(event.request);
+  if (!written || (key && !(await bytesValid(written, key)))) {
+    await cache.delete(event.request);
+    return new Response("nila asset cache write failed verification", { status: 502 });
+  }
+  return response;
+}
+
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
   const url = new URL(event.request.url);
-  if (url.pathname.includes("/functions/v1/")) return;
+  if (url.origin !== self.location.origin) return;
   event.respondWith(
     (async () => {
-      if (await thisWorkerRetired()) {
-        // Superseded worker: network pass-through only, zero cache access.
-        return fetch(event.request);
-      }
-      if (!postTakeoverCleanupDone) {
-        // Belt: activate finished without us observing it (e.g. the worker
-        // was killed mid-activate) - re-assert retired-cache cleanup before
-        // serving anything from cache.
-        await cleanupRetired();
-        postTakeoverCleanupDone = true;
-      }
+      if (await newerShellExists()) return fetch(event.request);
       if (event.request.mode === "navigate") {
-        try {
-          const response = await fetch(event.request);
-          if (response.ok) {
-            const cache = await caches.open(SHELL);
-            await cache.put("./index.html", response.clone());
-          }
-          return response;
-        } catch (error) {
-          const cached = await caches.match("./index.html");
-          if (cached) return cached;
-          throw error;
-        }
-      }
-      const key = integrityKey(url);
-      const cached = await caches.match(event.request);
-      if (cached) {
-        if (!key || (await bytesValid(cached, key))) return cached;
-        // Poisoned entry: evict and refetch - never served.
+        // Bounded late-recreation defense: only touch caches when the census
+        // is dirty; a healthy census costs one keys() call per navigation.
+        event.waitUntil(
+          (async () => {
+            const keys = await caches.keys();
+            if (keys.some((k) => shellVersion(k) > 0 && k !== SHELL)) {
+              await cleanupRetired();
+            }
+          })(),
+        );
         const cache = await caches.open(SHELL);
-        await cache.delete(event.request);
+        return (await cache.match("./index.html")) || fetch(event.request);
       }
-      const response = await fetch(event.request);
-      if (response.ok && url.pathname.includes("/assets/")) {
-        if (key && !(await bytesValid(response, key))) {
-          // Served bytes do not match the deploy digest: must not be used.
-          return new Response("nila asset integrity failure", {
-            status: 502,
-          });
-        }
-        const cache = await caches.open(SHELL);
-        await cache.put(event.request, response.clone());
-      }
-      return response;
+      return serveAsset(event, url, integrityKey(url));
     })(),
   );
 });
