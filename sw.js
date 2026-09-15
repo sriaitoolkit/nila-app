@@ -97,7 +97,13 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
   event.respondWith(
     (async () => {
-      if (await newerShellExists()) return fetch(event.request);
+      // Retired pass-through: only when a newer worker is actually in the
+      // pipeline AND has already built its shell. A lone future-version cache
+      // (page-created) is dirty census, not a takeover - we keep serving and
+      // the next navigation's cleanup removes it.
+      if ((self.registration.installing || self.registration.waiting) && (await newerShellExists())) {
+        return fetch(event.request);
+      }
       if (event.request.mode === "navigate") {
         // Bounded late-recreation defense: only touch caches when the census
         // is dirty; a healthy census costs one keys() call per navigation.
