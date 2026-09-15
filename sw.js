@@ -1,6 +1,6 @@
 // Nila app-shell cache. Navigations are network-first so an installed TV cannot
 // stay stranded on an old app shell; immutable hashed assets remain cache-first.
-const SHELL = "nila-shell-v4";
+const SHELL = "nila-shell-v5";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(SHELL).then((cache) => cache.addAll(["./", "./index.html"])));
