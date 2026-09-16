@@ -1,4 +1,4 @@
-// nila-app shell service worker - v12 (P0 pairing-submit fix deploy bump; v9 fixes below)
+// nila-app shell service worker - v13 (inkverse nametag repair deploy bump; v9 fixes below)
 // Fixes the v8 launch blockers found by test-eng + the local swlab harness:
 //  - v8's retired check compared registration.active to self (the global
 //    scope) - ALWAYS true, so v8 passed every fetch to the network and never
@@ -11,15 +11,15 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 12;
+const VERSION = 13;
 const SHELL = `nila-shell-v${VERSION}`;
 
 // hashed assets, filled by scripts/deploy-guard/integrity.mjs at deploy time.
 const ASSET_INTEGRITY = {
-  "assets/index-BCZ3uV9z.js":
-    "48d26df210e8ce9b5cc0ed124b9f189bb948de29016ba745030f631a1e5dba62",
-  "assets/index-BVkR_boG.css":
-    "e3ea88b33954ded5f4848193ead6dbca211af933e23a00941acd2942c2d44439",
+  "assets/index-DKR7Neft.js":
+    "5c653a5df70939b0140ec17b81cb329a7c84a7b519330b3be033f678da58267d",
+  "assets/index-DBZcojcV.css":
+    "59b769dfe268227a21482eb55091d2ff40074c70fc7674112a4a123a9294ba75",
 };
 
 function shellVersion(key) {
