@@ -1,4 +1,4 @@
-// nila-app shell service worker - v9 (PM rows 281/283)
+// nila-app shell service worker - v10 (PICKER-fix v1.1 deploy bump; v9 fixes below)
 // Fixes the v8 launch blockers found by test-eng + the local swlab harness:
 //  - v8's retired check compared registration.active to self (the global
 //    scope) - ALWAYS true, so v8 passed every fetch to the network and never
@@ -11,14 +11,14 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 9;
+const VERSION = 10;
 const SHELL = `nila-shell-v${VERSION}`;
 
-// DEPLOY-GUARD STAMP REQUIRED: exact sha256 digests for the currently served
-// hashed assets, filled by scripts/deploy-guard/integrity.mjs at deploy time.
 const ASSET_INTEGRITY = {
-  "assets/index-1iw5b1kd.js": "09a5ae493e678b15365676ecf7027fffd6d2a5da12c9e03feabae0c74d9e79fa",
-  "assets/index-CCTeDkKe.css": "98e05696b3b222e554767d7d6795f7559689f0fb386ea4efff507babbc9bc5c4"
+  "assets/index-qv4iq_p3.js":
+    "17b8c0ce7a7559d0294253e5bacf6a0f18e83e11783c68393149dec4a539f9e1",
+  "assets/index-D3ZK9L3N.css":
+    "b394cfdbfff41245cbb29989a11d2afad26aeed9519acb4132595d106522ed4e",
 };
 
 function shellVersion(key) {
@@ -101,7 +101,10 @@ self.addEventListener("fetch", (event) => {
       // pipeline AND has already built its shell. A lone future-version cache
       // (page-created) is dirty census, not a takeover - we keep serving and
       // the next navigation's cleanup removes it.
-      if ((self.registration.installing || self.registration.waiting) && (await newerShellExists())) {
+      if (
+        (self.registration.installing || self.registration.waiting) &&
+        (await newerShellExists())
+      ) {
         return fetch(event.request);
       }
       if (event.request.mode === "navigate") {
