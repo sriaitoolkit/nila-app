@@ -1,14 +1,4 @@
-// nila-app shell service worker - v14 (shell-redirect poisoning fix; v11 history below)
-// v14: never cache or serve "./index.html" - Pages 308-redirects it to "./" and
-// cache.addAll stores the REDIRECTED response. Chrome refuses a redirected response
-// for navigation respondWith -> every controlled navigation fails ERR_FAILED
-// (founder "app broken in several ways", 2026-09-16 22:27). v14 caches and serves
-// only "./" and treats any redirected cached entry as poison.
-// VERSION MUST EXCEED the highest deployed shell: production currently serves
-// v11-class code stamped v13 (deploy-time bumps) - v12 would self-retire against
-// existing v13 client caches (newerShellExists) and v13 would collide with the
-// poisoned cache name and skip eviction. v14 activates cleanly and its
-// cleanupRetired evicts every retired poisoned cache (v11..v13).
+// nila-app shell service worker - v11 (PICKER-fix v1.2 deploy bump; v9 fixes below)
 // Fixes the v8 launch blockers found by test-eng + the local swlab harness:
 //  - v8's retired check compared registration.active to self (the global
 //    scope) - ALWAYS true, so v8 passed every fetch to the network and never
@@ -21,19 +11,12 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 14;
+const VERSION = 11;
 const SHELL = `nila-shell-v${VERSION}`;
 
-// Exact sha256 digests for the currently served hashed assets, filled by
-// scripts/deploy-guard/integrity.mjs at deploy time. The marker lives INSIDE
-// the placeholder block so stamping consumes it; a raw build keeps it and
-// can never pass the deploy guard (verify-deploy tier S, stage-deploy stamp).
-const ASSET_INTEGRITY = {
-  "assets/index-C4NgHN-T.js":
-    "f62b7274e8788d60777b46dc25e96554aca7a5b0c0252c9fd4d3cce783ae7407",
-  "assets/index-DBZcojcV.css":
-    "59b769dfe268227a21482eb55091d2ff40074c70fc7674112a4a123a9294ba75",
-};
+// DEPLOY-GUARD STAMP REQUIRED: exact sha256 digests for the currently served
+// hashed assets, filled by scripts/deploy-guard/integrity.mjs at deploy time.
+const ASSET_INTEGRITY = {/* "assets/index-XXXXXXXX.js": "<64-hex sha256>" */};
 
 function shellVersion(key) {
   const m = /^nila-shell-v(\d+)$/.exec(key);
@@ -66,7 +49,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(SHELL);
-      await cache.addAll(["./"]); // never "./index.html" - Pages 308-redirects it; a redirected shell response kills navigations
+      await cache.addAll(["./", "./index.html"]);
       await self.skipWaiting();
     })(),
   );
@@ -86,17 +69,11 @@ async function serveAsset(event, url, key) {
   const cache = await caches.open(SHELL); // ACTIVE shell only - never caches.match
   const cached = await cache.match(event.request);
   if (cached) {
-    if (cached.redirected) {
-      await cache.delete(event.request); // redirected entries are poison - never serve
-    } else if (!key || (await bytesValid(cached, key))) {
-      return cached;
-    } else {
-      await cache.delete(event.request); // exact bad entry deleted
-    }
+    if (!key || (await bytesValid(cached, key))) return cached;
+    await cache.delete(event.request); // exact bad entry deleted
   }
   const response = await fetch(event.request);
   if (!response.ok) return response;
-  if (response.redirected) return response; // never cache a redirected response
   if (!url.pathname.includes("/assets/")) return response;
   if (key && !(await bytesValid(response, key))) {
     return new Response("nila asset failed integrity validation", { status: 502 });
@@ -139,13 +116,7 @@ self.addEventListener("fetch", (event) => {
           })(),
         );
         const cache = await caches.open(SHELL);
-        const shell = await cache.match("./");
-        if (shell && !shell.redirected) return shell;
-        if (shell) await cache.delete("./"); // redirected shell is poison - never serve it
-        // Normalize the network side too: a navigation to /nila-app/index.html
-        // fetched as-is follows the Pages 308 and yields a redirected response -
-        // the same respondWith failure class. Always fetch the canonical shell.
-        return fetch(new URL("./", self.location).href);
+        return (await cache.match("./index.html")) || fetch(event.request);
       }
       return serveAsset(event, url, integrityKey(url));
     })(),
