@@ -11,7 +11,7 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 14;
+const VERSION = 15;
 const SHELL = `nila-shell-v${VERSION}`;
 
 // DEPLOY-GUARD STAMP REQUIRED: exact sha256 digests for the currently served
@@ -103,6 +103,13 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
   event.respondWith(
     (async () => {
+      // P1 boot-blank work order (PM admission 2026-09-26 05:00 IST): preview
+      // navigations pass straight to network. The navigate branch below serves
+      // the prod shell for EVERY in-scope navigation, which made previews and
+      // the preview-scoped diag page unreachable on prod-carrying clients.
+      if (event.request.mode === "navigate" && url.pathname.startsWith("/nila-app/preview/")) {
+        return fetch(event.request);
+      }
       // Retired pass-through: only when a newer worker is actually in the
       // pipeline AND has already built its shell. A lone future-version cache
       // (page-created) is dirty census, not a takeover - we keep serving and
