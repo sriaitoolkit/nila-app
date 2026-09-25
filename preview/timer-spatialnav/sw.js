@@ -1,4 +1,4 @@
-// nila-app shell service worker - v13 (timer SpatialNav fix PREVIEW stamp; v9 fixes below)
+// nila-app shell service worker - v13 (timer SpatialNav fix PREVIEW stamp, base-corrected; v9 fixes below)
 // Fixes the v8 launch blockers found by test-eng + the local swlab harness:
 //  - v8's retired check compared registration.active to self (the global
 //    scope) - ALWAYS true, so v8 passed every fetch to the network and never
@@ -17,8 +17,8 @@ const SHELL = `nila-shell-v${VERSION}`;
 // DEPLOY-GUARD STAMP REQUIRED: exact sha256 digests for the currently served
 // hashed assets, filled by scripts/deploy-guard/integrity.mjs at deploy time.
 const ASSET_INTEGRITY = {
-  "assets/index-CsC-tDQM.js":
-    "84ddfa245f02d5e463e4349c2a490c45365bd7e73de115015438b0cf132ff7ba",
+  "assets/index-Ce09EIm_.js":
+    "972aabf3590354524c630e595ef4f77e507a8151d771ea26e6cbcb7f0079768c",
   "assets/index-Cz6Cl8BG.css":
     "f5afc44d800b51e98a59c113336bb781560c5412aa3b94307834eb697b4e5e8f",
   "parent/assets/index-kwUp9Hla.js":
