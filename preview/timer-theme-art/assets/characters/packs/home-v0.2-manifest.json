@@ -1,0 +1,170 @@
+{
+  "baseCommit": "3517a4cad4dc849f1d45c51e786e26c1eb1b289a",
+  "assets": {
+    "elephant-stand.png": {
+      "bytes": 104347,
+      "sha256": "c364dfc09e99b226738560fbab73ad12dd16ecf6a3faf8e80822cf34f0bf88f6",
+      "role": "runtime"
+    },
+    "elephant-cheer.png": {
+      "bytes": 89981,
+      "sha256": "693fbfa4e9460da4d9fc72cae86cd5a42757726f4dd64131d11127c3b834f114",
+      "role": "runtime"
+    },
+    "elephant-cutout.png": {
+      "bytes": 655728,
+      "sha256": "55de102a9147a64e307a0c9eb901c69897f853837701ddc47c38b08c28921016",
+      "role": "runtime"
+    },
+    "packs/zig-the-zebra/base.png": {
+      "bytes": 556824,
+      "sha256": "11b5990d223935b25bfdc725d8da54c22b758feb2793a9f682494f6b88f110a2",
+      "role": "runtime"
+    },
+    "packs/zig-the-zebra/pointing.png": {
+      "bytes": 672946,
+      "sha256": "62da19802943ae1bd7f239c83be802061f445f564685911cf527014e47734e39",
+      "role": "runtime"
+    },
+    "packs/zig-the-zebra/thinking.png": {
+      "bytes": 596090,
+      "sha256": "d9016425adc6fc4fc3ee9a9e3db6562f0f7f09ce9af3914369bb49753cfb5394",
+      "role": "runtime"
+    },
+    "packs/zig-the-zebra/celebrating.png": {
+      "bytes": 652143,
+      "sha256": "5b7af4c67b8ed228f06504a5504a299af1a73f7f44207fd4a767de62b11f46ee",
+      "role": "runtime"
+    },
+    "spares/zig-base-clay-v1.png": {
+      "bytes": 1126666,
+      "sha256": "099c1e39df1918aa10d1208ea99155e1de3ccebfa416fa2ac8c567d8bdbf7e5f",
+      "role": "spare-only"
+    },
+    "spares/ello-base-clay-v1.png": {
+      "bytes": 1446451,
+      "sha256": "8df6bcaf72298b241303e2c7cb70bdfddb185418fe6672aeef42c8706e1aedf3",
+      "role": "spare-only"
+    },
+    "packs/adi/base.png": {
+      "bytes": 938762,
+      "sha256": "f6832041949ab026feb5154ab79a9b1a40c49f01c1ad9e8e65f4b819c76ea4ee",
+      "role": "runtime"
+    },
+    "packs/adi/pointing.png": {
+      "bytes": 952785,
+      "sha256": "6810d5f3368928ff2b4a3406ea91bbc965cafba1e91adfbe27afef47ca4cf167",
+      "role": "runtime"
+    },
+    "packs/adi/thinking.png": {
+      "bytes": 915584,
+      "sha256": "14f14bb870266b7ea58b97f1fb9c414d820be62e06a4c87c630feba7eeb659d2",
+      "role": "runtime"
+    },
+    "packs/adi/celebrating.png": {
+      "bytes": 1077418,
+      "sha256": "1668a5b47ae7f151f6a8cdfe7872d763589bc7f1d5a3c4676504935f9935ad7f",
+      "role": "runtime"
+    },
+    "packs/ella/base.png": {
+      "bytes": 938110,
+      "sha256": "cdd8f97fb3ced38edf245bf3553f0fd2f30e64581f107ed6c5d657744d182955",
+      "role": "runtime"
+    },
+    "packs/ella/pointing.png": {
+      "bytes": 1000654,
+      "sha256": "25a18337653294a27adf13c073ceb310ef7911489f7d74b4003066aa81beb3ca",
+      "role": "runtime"
+    },
+    "packs/ella/thinking.png": {
+      "bytes": 913113,
+      "sha256": "52e49426117af9cffdc8d983777379797081d0763187b1e1cf530f790ef16fc9",
+      "role": "runtime"
+    },
+    "packs/ella/celebrating.png": {
+      "bytes": 1145788,
+      "sha256": "f87429a1f3984f01f802c021f3c1f60077504b264d8fc1b67d9e7b472e73481b",
+      "role": "runtime"
+    },
+    "packs/sam/base.png": {
+      "bytes": 1022692,
+      "sha256": "a05ebd82fd6d8b3b8d24f9f761d0cd011947244734b2b4e1a2f2210c8951313c",
+      "role": "runtime"
+    },
+    "packs/sam/pointing.png": {
+      "bytes": 1055598,
+      "sha256": "4e2a21444a56e24837312a84f879b0ce2fbe1d38223734fd50834092cec72b89",
+      "role": "runtime"
+    },
+    "packs/sam/thinking.png": {
+      "bytes": 1008648,
+      "sha256": "2c1cfbdad24b07f03eba1481f697e78cf622c544b0a4e8ee2a2feb62bdc9bcbd",
+      "role": "runtime"
+    },
+    "packs/sam/celebrating.png": {
+      "bytes": 1062280,
+      "sha256": "d2ea78e3b3a95dfd81254a941dc4888c50c31878525cb9e01364d592b4c7e2df",
+      "role": "runtime"
+    },
+    "packs/roxy/base.png": {
+      "bytes": 1398219,
+      "sha256": "4f97df5ba3f6be6a33a2c97e2203aac3a6062169ee8667b02f7128221cb9fb29",
+      "role": "runtime"
+    },
+    "packs/roxy/pointing.png": {
+      "bytes": 1396249,
+      "sha256": "492f79e100c93bc9d42ac29cccba59259e9178f95268a93a447021e4e5089b5d",
+      "role": "runtime"
+    },
+    "packs/roxy/thinking.png": {
+      "bytes": 1268194,
+      "sha256": "410ea26d94147f36f1a637a849108db3ad300700a83247e55e6c25b92b3d6584",
+      "role": "runtime"
+    },
+    "packs/roxy/celebrating.png": {
+      "bytes": 1324828,
+      "sha256": "e4ac7b1e9247a8121a1c4f9e6c306f3f8285ae12138b6bffccd10467d42f1d2e",
+      "role": "runtime"
+    },
+    "packs/milo/base.png": {
+      "bytes": 1251861,
+      "sha256": "3ef2b79d0b1e738540a55375973f3cb3df69d25ab315cabbdef9e4532e4866fd",
+      "role": "runtime"
+    },
+    "packs/milo/pointing.png": {
+      "bytes": 1235477,
+      "sha256": "5ef0398d29f619d6c3193894fe275aeaaa472c09da5b797da1fa05a26de0a2a3",
+      "role": "runtime"
+    },
+    "packs/milo/thinking.png": {
+      "bytes": 1203125,
+      "sha256": "53d938c5f58ce993ee020d33b22e8c017aa0e5a75390ce505403ecd5984902c9",
+      "role": "runtime"
+    },
+    "packs/milo/celebrating.png": {
+      "bytes": 1259149,
+      "sha256": "f7d118d4f1f1e83b1977ec97cfc6d7a51a3d650cd6e89f6d72ca801cad3cb796",
+      "role": "runtime"
+    },
+    "packs/pepper/base.png": {
+      "bytes": 1222683,
+      "sha256": "7d831c86ee6504824675bcab74f2983977d8b7143e3789f5aa49a4d334d7b7be",
+      "role": "runtime"
+    },
+    "packs/pepper/pointing.png": {
+      "bytes": 1229472,
+      "sha256": "f46090f9c63fe695d969b67f57823ae4aed484d84e204831d747b3e63b271ce1",
+      "role": "runtime"
+    },
+    "packs/pepper/thinking.png": {
+      "bytes": 1173973,
+      "sha256": "14595f69f969a5ecbfa3c399caeeddaf9cbb1d3596ef181e10cf238e384b9b75",
+      "role": "runtime"
+    },
+    "packs/pepper/celebrating.png": {
+      "bytes": 1261623,
+      "sha256": "f4075f1c10690d8da279c67b95185d76c7a6c028d341bceef8acf968889e820e",
+      "role": "runtime"
+    }
+  }
+}
