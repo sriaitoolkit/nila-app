@@ -1,4 +1,4 @@
-// nila-app shell service worker - v13 (timer v3r deploy bump; v12 was video lane; v9 fixes below)
+// nila-app shell service worker - v11 (PICKER-fix v1.2 deploy bump; v9 fixes below)
 // Fixes the v8 launch blockers found by test-eng + the local swlab harness:
 //  - v8's retired check compared registration.active to self (the global
 //    scope) - ALWAYS true, so v8 passed every fetch to the network and never
@@ -11,14 +11,14 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 13;
+const VERSION = 14;
 const SHELL = `nila-shell-v${VERSION}`;
 
 // DEPLOY-GUARD STAMP REQUIRED: exact sha256 digests for the currently served
 // hashed assets, filled by scripts/deploy-guard/integrity.mjs at deploy time.
 const ASSET_INTEGRITY = {
-  "assets/index-C0sV7RSP.js":
-    "12b4596fa1520c1bf9a8442ae2f6adc5fd9b2862def6a84e8c48da3a444a32dc",
+  "assets/index-BKfx_i8L.js":
+    "bc1d28c32b2ba59a8b8476af0d0165c47d398ea47d6b67dc966eccfee0dd6b34",
   "assets/index-Cz6Cl8BG.css":
     "f5afc44d800b51e98a59c113336bb781560c5412aa3b94307834eb697b4e5e8f",
   "parent/assets/index-kwUp9Hla.js":
