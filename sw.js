@@ -11,12 +11,19 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 11;
+const VERSION = 12;
 const SHELL = `nila-shell-v${VERSION}`;
 
-// DEPLOY-GUARD STAMP REQUIRED: exact sha256 digests for the currently served
-// hashed assets, filled by scripts/deploy-guard/integrity.mjs at deploy time.
-const ASSET_INTEGRITY = {/* "assets/index-XXXXXXXX.js": "<64-hex sha256>" */};
+const ASSET_INTEGRITY = {
+  "assets/index-BxAvbFUc.js":
+    "e8d14ba634142f77da8720fb025a3ad0020eaf5bf77dfb564c3957d45193efbc",
+  "assets/index-DBaUYleb.css":
+    "db038e1927e792facf0834a37d2720e4406e2fc0839c3dea8d48477e1e227dda",
+  "parent/assets/index-kwUp9Hla.js":
+    "729eeaf5b87b7e02a443e178ce871e5d7cef4ffef8cb50f24a4c7d3a84887446",
+  "parent/assets/index-CetFmaHH.css":
+    "087500b661869c96de6c59ee50b91d2ac54eedad4599ec9557f3d40d91055b18",
+};
 
 function shellVersion(key) {
   const m = /^nila-shell-v(\d+)$/.exec(key);
