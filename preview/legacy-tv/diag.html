@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nila TV diag</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #101028;
+        color: #f4f1e8;
+        font-family: system-ui, sans-serif;
+      }
+      body {
+        padding: 4vmin;
+      }
+      h1 {
+        font-size: 6vmin;
+        margin: 0 0 2vmin;
+      }
+      #overall {
+        font-size: 7vmin;
+        font-weight: 700;
+        padding: 2vmin 3vmin;
+        border-radius: 2vmin;
+        margin-bottom: 3vmin;
+      }
+      #overall.pass {
+        background: #144d24;
+        color: #b8f5c6;
+      }
+      #overall.fail {
+        background: #5c1420;
+        color: #ffd3d3;
+      }
+      #ua {
+        font-size: 3.4vmin;
+        line-height: 1.35;
+        word-break: break-all;
+        background: #1c1c3c;
+        padding: 2vmin 3vmin;
+        border-radius: 1.5vmin;
+        margin-bottom: 3vmin;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      td {
+        font-size: 3.6vmin;
+        padding: 1.2vmin 2vmin;
+        border-bottom: 1px solid #2c2c50;
+        vertical-align: top;
+      }
+      td.r {
+        font-weight: 700;
+        white-space: nowrap;
+        width: 12vmin;
+      }
+      tr.pass td.r {
+        color: #7fe79a;
+      }
+      tr.fail td.r {
+        color: #ff8d8d;
+      }
+      tr.env td.r {
+        color: #f5d97f;
+      }
+      td.d {
+        color: #b9b9d4;
+        font-size: 3vmin;
+        word-break: break-all;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Nila TV diag</h1>
+    <div id="overall">RUNNING&hellip;</div>
+    <div id="ua"></div>
+    <table id="rungs"></table>
+    <script type="module">
+      window.__nilaDiagModule = 1;
+      if (window.__nilaDiagModuleDone) window.__nilaDiagModuleDone();
+    </script>
+    <script>
+      (function () {
+        "use strict";
+        var rungs = [];
+        function run(name, fn) {
+          var row = { name: name, pass: false, detail: "" };
+          try {
+            var r = fn();
+            row.pass =
+              r === true ? true : r && (r.pass === true || r.pass === null) ? r.pass : false;
+            row.detail =
+              r && r.detail
+                ? String(r.detail)
+                : row.pass === true
+                  ? "ok"
+                  : row.pass === null
+                    ? "env-limited"
+                    : "returned falsy";
+          } catch (e) {
+            row.pass = false;
+            row.detail =
+              (e && e.name ? e.name + ": " : "") + (e && e.message ? e.message : String(e));
+          }
+          rungs.push(row);
+        }
+        function syntax(name, code, expect) {
+          run(name, function () {
+            var v = eval(code);
+            if (expect !== undefined && v !== expect)
+              return { pass: false, detail: "evaluated to " + String(v) };
+            return true;
+          });
+        }
+
+        run("ES module execution", function () {
+          if (window.__nilaDiagModule === 1) return true;
+          // type=module scripts are deferred: they run AFTER this classic script,
+          // so at capture time the flag is never set. Capture pending; the module
+          // resolves itself via __nilaDiagModuleDone, or the load finalizer rules it.
+          return { pass: null, detail: "pending: module script is deferred" };
+        });
+        var moduleRung = rungs[rungs.length - 1];
+        window.__nilaDiagModuleDone = function () {
+          moduleRung.pass = true;
+          moduleRung.detail = "module executed (deferred, after classic script)";
+          paint();
+        };
+        document.addEventListener("DOMContentLoaded", function () {
+          if (moduleRung.pass !== null) return;
+          if (window.__nilaDiagModule === 1) {
+            moduleRung.pass = true;
+            moduleRung.detail = "module executed (deferred)";
+          } else if (location.protocol === "file:") {
+            moduleRung.pass = null;
+            moduleRung.detail = "env-limited: module scripts are CORS-blocked from file://";
+          } else {
+            moduleRung.pass = false;
+            moduleRung.detail = "module script did not execute by DOMContentLoaded";
+          }
+          paint();
+        });
+        syntax("arrow fns + template literals", "(() => `n${1}`)()", "n1");
+        syntax(
+          "async/await",
+          "(async function () { await 1; return 7; })() instanceof Promise",
+          true,
+        );
+        syntax("optional chaining + nullish (Chrome 80)", "({a:1})?.a ?? 2", 1);
+        syntax(
+          "class fields (Chrome 74)",
+          "(function () { class C { x = 5; } return new C().x; })()",
+          5,
+        );
+        run("globalThis (Chrome 71)", function () {
+          return typeof globalThis !== "undefined"
+            ? true
+            : { pass: false, detail: "globalThis undefined" };
+        });
+        run("fetch + Promise", function () {
+          var ok = typeof fetch === "function" && typeof Promise === "function";
+          return ok
+            ? true
+            : { pass: false, detail: "fetch=" + typeof fetch + " Promise=" + typeof Promise };
+        });
+        run("localStorage write/read", function () {
+          localStorage.setItem("__nila_diag", "1");
+          var v = localStorage.getItem("__nila_diag");
+          localStorage.removeItem("__nila_diag");
+          return v === "1" ? true : { pass: false, detail: "read back " + String(v) };
+        });
+        run("serviceWorker registration capability", function () {
+          if (!("serviceWorker" in navigator))
+            return location.protocol === "file:"
+              ? { pass: null, detail: "env-limited: navigator.serviceWorker absent from file://" }
+              : { pass: false, detail: "navigator.serviceWorker absent" };
+          return { pass: true, detail: "present; register attempt pending" };
+        });
+        run("crypto.subtle presence", function () {
+          var ok = !!(window.crypto && window.crypto.subtle);
+          return ok
+            ? true
+            : { pass: false, detail: "crypto.subtle absent (insecure context or too old)" };
+        });
+        run("CSS clamp()", function () {
+          var ok = window.CSS && CSS.supports && CSS.supports("width", "clamp(1px, 2px, 3px)");
+          return ok ? true : { pass: false, detail: "CSS.supports clamp = false" };
+        });
+        run("CSS :has()", function () {
+          var ok = window.CSS && CSS.supports && CSS.supports("selector(:has(a))");
+          return ok ? true : { pass: false, detail: "CSS.supports :has = false" };
+        });
+
+        function paint() {
+          document.getElementById("ua").textContent = navigator.userAgent;
+          var t = document.getElementById("rungs");
+          t.innerHTML = ""; // idempotent: initial paint, sw-settle repaint and the 3s fallback all re-enter
+          var firstFail = null;
+          var passed = 0;
+          var envs = 0;
+          for (var i = 0; i < rungs.length; i++) {
+            var r = rungs[i];
+            var tr = document.createElement("tr");
+            tr.className = r.pass === null ? "env" : r.pass ? "pass" : "fail";
+            var a = document.createElement("td");
+            a.className = "r";
+            a.textContent = r.pass === null ? "ENV" : r.pass ? "PASS" : "FAIL";
+            var b = document.createElement("td");
+            b.textContent = r.name;
+            var c = document.createElement("td");
+            c.className = "d";
+            c.textContent = r.detail;
+            tr.appendChild(a);
+            tr.appendChild(b);
+            tr.appendChild(c);
+            t.appendChild(tr);
+            if (r.pass === true) passed++;
+            else if (r.pass === null) envs++;
+            else if (!firstFail) firstFail = r;
+          }
+          var el = document.getElementById("overall");
+          if (firstFail) {
+            el.className = "fail";
+            el.textContent =
+              "FIRST FAIL: " + firstFail.name + " (" + passed + "/" + rungs.length + ")";
+          } else {
+            el.className = "pass";
+            el.textContent =
+              "ALL PASS " +
+              passed +
+              "/" +
+              rungs.length +
+              (envs ? " (" + envs + " env-limited)" : "");
+          }
+        }
+
+        var swRung = null;
+        for (var i = 0; i < rungs.length; i++)
+          if (rungs[i].name === "serviceWorker registration capability") swRung = rungs[i];
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("sw.js").then(
+            function (reg) {
+              if (swRung) {
+                swRung.pass = true;
+                swRung.detail = "register ok, scope " + reg.scope;
+              }
+              paint();
+            },
+            function (e) {
+              if (swRung) {
+                if (location.protocol === "file:") {
+                  swRung.pass = null;
+                  swRung.detail =
+                    "env-limited: register blocked from file:// (" +
+                    (e && e.message ? e.message : String(e)) +
+                    ")";
+                } else {
+                  swRung.pass = false;
+                  swRung.detail = "register threw: " + (e && e.message ? e.message : String(e));
+                }
+              }
+              paint();
+            },
+          );
+          setTimeout(paint, 3000);
+        }
+        paint();
+      })();
+    </script>
+  </body>
+</html>
