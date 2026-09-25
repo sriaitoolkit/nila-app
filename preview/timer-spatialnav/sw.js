@@ -17,8 +17,8 @@ const SHELL = `nila-shell-v${VERSION}`;
 // DEPLOY-GUARD STAMP REQUIRED: exact sha256 digests for the currently served
 // hashed assets, filled by scripts/deploy-guard/integrity.mjs at deploy time.
 const ASSET_INTEGRITY = {
-  "assets/index-Kpv6RYuF.js":
-    "9be68742ecf16fb318dcdbfa5efa17dd2118ca98be51081b35ae58d3d3f38913",
+  "assets/index-Bir8qw19.js":
+    "9ee851875d452173f23d401cd4d77e336c5648991b61ea087042af790a1fd751",
   "assets/index-Cz6Cl8BG.css":
     "f5afc44d800b51e98a59c113336bb781560c5412aa3b94307834eb697b4e5e8f",
   "parent/assets/index-kwUp9Hla.js":
