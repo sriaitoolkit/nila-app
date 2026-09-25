@@ -11,7 +11,7 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 13;
+const VERSION = 14;
 const SHELL = `nila-shell-v${VERSION}`;
 
 // DEPLOY-GUARD STAMP REQUIRED: exact sha256 digests for the currently served
