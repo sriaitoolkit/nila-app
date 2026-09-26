@@ -1,4 +1,4 @@
-// nila-app shell service worker - v21 (hotfix train item 2 shelf TV layout + picker two-up; v20 item 3 picker uniform; v19 item 1 worldpick; v11 lineage below)
+// nila-app shell service worker - v23 (hotfix train item 6b phone clamp: theme-scoped shelf ledge clamp + clay fill + chalkboard offscreen; v22 item 6a colour-mix tiles asset-only, sw untouched; v21 item 2 shelf TV layout + picker two-up; v20 item 3 picker uniform; v19 item 1 worldpick; v11 lineage below)
 // Fixes the v8 launch blockers found by test-eng + the local swlab harness:
 //  - v8's retired check compared registration.active to self (the global
 //    scope) - ALWAYS true, so v8 passed every fetch to the network and never
@@ -11,7 +11,7 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 21;
+const VERSION = 23;
 const SHELL = `nila-shell-v${VERSION}`;
 
 const ASSET_INTEGRITY = {
@@ -31,6 +31,10 @@ const ASSET_INTEGRITY = {
     "ffa5531b0a619c44f034c59e171dac0bbfecbfd97d0ae6ffbbaf9464f94ddc71",
   "assets/index-BtQLX5oM.css":
     "3bdf39bfd675e23090893f89f9f9177fc0ac9b436b048027f0aa29216070372e",
+  "assets/index-CLp7L6eg.js":
+    "1f6bc20eee89ba135c36ab09c055c87bd82ffb95f4d357109d7edc2083a76135",
+  "assets/index-DmaEiXvu.css":
+    "fe80f0abe2a3c49ccf09bd3c56012e34f3bff2d5f414caf666b347a7d19f59d8",
 };
 
 function shellVersion(key) {
@@ -144,3 +148,4 @@ self.addEventListener("fetch", (event) => {
     })(),
   );
 });
+
