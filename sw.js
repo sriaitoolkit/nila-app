@@ -11,7 +11,7 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 16;
+const VERSION = 17;
 const SHELL = `nila-shell-v${VERSION}`;
 
 const ASSET_INTEGRITY = {
@@ -19,10 +19,10 @@ const ASSET_INTEGRITY = {
     "729eeaf5b87b7e02a443e178ce871e5d7cef4ffef8cb50f24a4c7d3a84887446",
   "parent/assets/index-CetFmaHH.css":
     "087500b661869c96de6c59ee50b91d2ac54eedad4599ec9557f3d40d91055b18",
-  "assets/index-Cru4tm9O.js":
-    "2a574f9b205717fdb86bf2fd86d63a0621e158c921ba6ca44126586b67a57d78",
-  "assets/index-CO5CXipj.css":
-    "77bf5316799bc422d4aa52d3819633669ea0f2bf239789f80e97fd51252cc4b0",
+  "assets/index-DLnrlZFW.js":
+    "c6b0cc865a1893d75009edd2f89bdfbbf48696f0a162c8aa6ab84a68ae15357e",
+  "assets/index-j9Qd7XEe.css":
+    "774a755c1562c39c2cf22058c7cba604c5b7d10eb4b8e009f53f02f4074489a7",
 };
 
 function shellVersion(key) {
