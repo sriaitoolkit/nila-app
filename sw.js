@@ -1,4 +1,4 @@
-// nila-app shell service worker - v11 (PICKER-fix v1.2 deploy bump; v9 fixes below)
+// nila-app shell service worker - v19 (hotfix train item 1 worldpick; v11 lineage below) (PICKER-fix v1.2 deploy bump; v9 fixes below)
 // Fixes the v8 launch blockers found by test-eng + the local swlab harness:
 //  - v8's retired check compared registration.active to self (the global
 //    scope) - ALWAYS true, so v8 passed every fetch to the network and never
@@ -11,7 +11,7 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 18;
+const VERSION = 19;
 const SHELL = `nila-shell-v${VERSION}`;
 
 const ASSET_INTEGRITY = {
@@ -19,10 +19,10 @@ const ASSET_INTEGRITY = {
     "729eeaf5b87b7e02a443e178ce871e5d7cef4ffef8cb50f24a4c7d3a84887446",
   "parent/assets/index-CetFmaHH.css":
     "087500b661869c96de6c59ee50b91d2ac54eedad4599ec9557f3d40d91055b18",
-  "assets/index-16sLnTPl.js":
-    "c2fc2b7795b2f12c007eefc1f0d1cbb6c5828f43599be9b79a0dfad80003a149",
-  "assets/index-BUZv6L_r.css":
-    "17fb5e0c1666bb8dd7df567889293350e5233a1977ae4da31a6d03bec5daf01c",
+  "assets/index-Ds3tCgQL.js":
+    "b573205b95c08b06d66c05b1a0bbf5d1520a08f8f697ba9b545b6e73fed64479",
+  "assets/index-CGf7wccC.css":
+    "88a9c28b34f64cdeb33bfac90ee10c4b436fb12d933b0b0cdc526151d800bbda",
 };
 
 function shellVersion(key) {
