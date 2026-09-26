@@ -11,20 +11,18 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 15;
+const VERSION = 16;
 const SHELL = `nila-shell-v${VERSION}`;
 
-// DEPLOY-GUARD STAMP REQUIRED: exact sha256 digests for the currently served
-// hashed assets, filled by scripts/deploy-guard/integrity.mjs at deploy time.
 const ASSET_INTEGRITY = {
-  "assets/index-BKfx_i8L.js":
-    "bc1d28c32b2ba59a8b8476af0d0165c47d398ea47d6b67dc966eccfee0dd6b34",
-  "assets/index-Cz6Cl8BG.css":
-    "f5afc44d800b51e98a59c113336bb781560c5412aa3b94307834eb697b4e5e8f",
   "parent/assets/index-kwUp9Hla.js":
     "729eeaf5b87b7e02a443e178ce871e5d7cef4ffef8cb50f24a4c7d3a84887446",
   "parent/assets/index-CetFmaHH.css":
     "087500b661869c96de6c59ee50b91d2ac54eedad4599ec9557f3d40d91055b18",
+  "assets/index-Cru4tm9O.js":
+    "2a574f9b205717fdb86bf2fd86d63a0621e158c921ba6ca44126586b67a57d78",
+  "assets/index-CO5CXipj.css":
+    "77bf5316799bc422d4aa52d3819633669ea0f2bf239789f80e97fd51252cc4b0",
 };
 
 function shellVersion(key) {

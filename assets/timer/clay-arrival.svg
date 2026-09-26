@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="shellG2" cx="42%" cy="30%" r="78%">
+      <stop offset="0%" stop-color="#c4f08a"/>
+      <stop offset="50%" stop-color="#8cd94a"/>
+      <stop offset="100%" stop-color="#4f9427"/>
+    </radialGradient>
+    <radialGradient id="bellyG" cx="45%" cy="32%" r="80%">
+      <stop offset="0%" stop-color="#ffe9bd"/>
+      <stop offset="60%" stop-color="#f2cd90"/>
+      <stop offset="100%" stop-color="#d9ab66"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="55" cy="106" rx="38" ry="6" fill="#000000" opacity="0.22"/>
+  <!-- shell back -->
+  <circle cx="54" cy="66" r="37" fill="url(#shellG2)"/>
+  <circle cx="54" cy="66" r="37" fill="none" stroke="#3f7d1e" stroke-width="2" opacity="0.5"/>
+  <!-- belly -->
+  <ellipse cx="54" cy="74" rx="26" ry="27" fill="url(#bellyG)"/>
+  <path d="M40 60 q14 10 28 0 M38 74 q16 10 32 0 M40 88 q14 8 28 0" stroke="#d9ab66" stroke-width="2" fill="none" opacity="0.7" stroke-linecap="round"/>
+  <!-- arms up -->
+  <path d="M28 52 q-10 -10 -6 -22 q8 2 12 12 z" fill="url(#bellyG)"/>
+  <path d="M80 52 q10 -10 6 -22 q-8 2 -12 12 z" fill="url(#bellyG)"/>
+  <!-- feet -->
+  <rect x="30" y="98" width="16" height="13" rx="6.5" fill="url(#bellyG)"/>
+  <rect x="62" y="98" width="16" height="13" rx="6.5" fill="url(#bellyG)"/>
+  <!-- head -->
+  <circle cx="54" cy="34" r="17" fill="url(#bellyG)"/>
+  <!-- happy closed eyes -->
+  <path d="M44 33 q4 -5 8 0 M56 33 q4 -5 8 0" stroke="#3d2412" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <!-- smile -->
+  <path d="M47 41 q7 6 14 0" stroke="#8a5a28" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <circle cx="41" cy="40" r="3.6" fill="#ff3d8b" opacity="0.35"/>
+  <circle cx="67" cy="40" r="3.6" fill="#ff3d8b" opacity="0.35"/>
+  <!-- finish flag -->
+  <rect x="97" y="30" width="3.4" height="72" rx="1.7" fill="#fff4dc"/>
+  <g>
+    <rect x="100" y="32" width="9" height="7" fill="#17123f"/>
+    <rect x="109" y="32" width="9" height="7" fill="#fff4dc"/>
+    <rect x="100" y="39" width="9" height="7" fill="#fff4dc"/>
+    <rect x="109" y="39" width="9" height="7" fill="#17123f"/>
+  </g>
+  <!-- sparkles -->
+  <path d="M16 22 l2.2 5.4 5.4 2.2 -5.4 2.2 -2.2 5.4 -2.2 -5.4 -5.4 -2.2 5.4 -2.2 z" fill="#ffc72c"/>
+  <path d="M90 12 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6 z" fill="#ffc72c"/>
+</svg>

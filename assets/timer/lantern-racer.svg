@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe97a" stop-opacity="0.5"/>
+      <stop offset="55%" stop-color="#ffd24d" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#ffd24d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="wing" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fdf6df"/>
+      <stop offset="100%" stop-color="#ecd9a0"/>
+    </linearGradient>
+  </defs>
+  <circle cx="58" cy="58" r="54" fill="url(#halo)"/>
+  <!-- trailing wing tails (left = behind, moth flies right) -->
+  <path d="M34 74 q-14 10 -12 24 q10 -2 16 -12 z" fill="url(#wing)" stroke="#c99b2f" stroke-width="1.6"/>
+  <path d="M44 80 q-8 12 -2 22 q6 -6 8 -14 z" fill="url(#wing)" stroke="#c99b2f" stroke-width="1.6"/>
+  <!-- upper wings -->
+  <path d="M52 44 q-22 -26 -40 -18 q6 22 30 30 z" fill="url(#wing)" stroke="#c99b2f" stroke-width="1.8"/>
+  <path d="M64 44 q10 -30 30 -32 q4 22 -18 36 z" fill="url(#wing)" stroke="#c99b2f" stroke-width="1.8"/>
+  <!-- wing moon marks -->
+  <path d="M30 38 a9 9 0 1 0 6 14 a7 7 0 1 1 -6 -14 z" fill="#ffd24d" opacity="0.9"/>
+  <circle cx="79" cy="32" r="4.6" fill="#ffd24d" opacity="0.9"/>
+  <circle cx="79" cy="32" r="4.6" fill="none" stroke="#c99b2f" stroke-width="1"/>
+  <!-- body -->
+  <ellipse cx="58" cy="58" rx="9" ry="17" fill="#ffd24d" stroke="#c99b2f" stroke-width="1.6" transform="rotate(18 58 58)"/>
+  <path d="M50 50 q8 5 16 0 M49 60 q9 5 17 0 M51 70 q7 4 14 0" stroke="#c99b2f" stroke-width="1.4" fill="none" transform="rotate(18 58 58)"/>
+  <!-- head + antennae -->
+  <circle cx="64" cy="42" r="6" fill="#ffd24d" stroke="#c99b2f" stroke-width="1.4"/>
+  <path d="M62 37 q-4 -8 -12 -9 M67 36 q0 -9 7 -13" stroke="#ffe97a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <circle cx="50" cy="28" r="1.8" fill="#ffe97a"/>
+  <circle cx="74" cy="23" r="1.8" fill="#ffe97a"/>
+  <!-- sparkles -->
+  <path d="M96 78 l1.8 4.4 4.4 1.8 -4.4 1.8 -1.8 4.4 -1.8 -4.4 -4.4 -1.8 4.4 -1.8 z" fill="#ffe97a"/>
+  <path d="M18 52 l1.3 3.2 3.2 1.3 -3.2 1.3 -1.3 3.2 -1.3 -3.2 -3.2 -1.3 3.2 -1.3 z" fill="#ffe97a"/>
+</svg>

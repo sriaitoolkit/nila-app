@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="shellG" cx="38%" cy="28%" r="75%">
+      <stop offset="0%" stop-color="#c4f08a"/>
+      <stop offset="45%" stop-color="#8cd94a"/>
+      <stop offset="100%" stop-color="#4f9427"/>
+    </radialGradient>
+    <radialGradient id="bodyG" cx="40%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#ffe9bd"/>
+      <stop offset="60%" stop-color="#f2cd90"/>
+      <stop offset="100%" stop-color="#d9ab66"/>
+    </radialGradient>
+  </defs>
+  <!-- ground shadow -->
+  <ellipse cx="58" cy="104" rx="36" ry="6" fill="#000000" opacity="0.22"/>
+  <!-- tail -->
+  <path d="M16 78 q-8 2 -9 8 q6 3 11 -2 z" fill="#d9ab66"/>
+  <!-- far legs -->
+  <rect x="30" y="88" width="13" height="15" rx="6.5" fill="#d9ab66"/>
+  <rect x="66" y="88" width="13" height="15" rx="6.5" fill="#d9ab66"/>
+  <!-- shell dome -->
+  <path d="M16 84 q-2 -34 36 -38 q40 -4 46 38 z" fill="url(#shellG)"/>
+  <!-- shell rim -->
+  <path d="M16 84 q-2 -34 36 -38 q40 -4 46 38 q-23 8 -41 8 q-19 0 -41 -8 z" fill="#4f9427" opacity="0.85"/>
+  <!-- scutes -->
+  <path d="M40 50 q-6 16 -3 32 M62 46 q2 18 -1 36 M80 54 q6 14 4 28" stroke="#3f7d1e" stroke-width="2.4" fill="none" opacity="0.55" stroke-linecap="round"/>
+  <!-- shell top highlight -->
+  <ellipse cx="44" cy="56" rx="16" ry="9" fill="#ffffff" opacity="0.35" transform="rotate(-14 44 56)"/>
+  <!-- near legs -->
+  <rect x="24" y="90" width="15" height="17" rx="7.5" fill="url(#bodyG)"/>
+  <rect x="72" y="90" width="15" height="17" rx="7.5" fill="url(#bodyG)"/>
+  <!-- head -->
+  <circle cx="97" cy="66" r="15" fill="url(#bodyG)"/>
+  <circle cx="101" cy="72" r="7.5" fill="url(#bodyG)"/>
+  <!-- eye -->
+  <circle cx="99" cy="62" r="4.6" fill="#ffffff"/>
+  <circle cx="100.2" cy="62.6" r="2.7" fill="#3d2412"/>
+  <circle cx="101.4" cy="60.8" r="1.1" fill="#ffffff"/>
+  <!-- smile + blush -->
+  <path d="M104 70 q3 2.4 5.5 0.4" stroke="#8a5a28" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <circle cx="93" cy="71" r="3.4" fill="#ff3d8b" opacity="0.35"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- tail shards: angular ribbons trailing left -->
+  <path d="M50 62 L8 42 L24 64 L4 70 L30 80 L20 100 L52 82 Z" fill="#fff8e2" stroke="#1a1408" stroke-width="4" stroke-linejoin="miter"/>
+  <path d="M50 66 L18 54 L32 70 L52 74 Z" fill="#e63946" stroke="#1a1408" stroke-width="3" stroke-linejoin="miter"/>
+  <path d="M50 78 L26 90 L40 74 Z" fill="#2a6ff2" stroke="#1a1408" stroke-width="3" stroke-linejoin="miter"/>
+  <!-- comet head: bold folded-paper shard pointing right, track-anchored -->
+  <path d="M42 50 L72 26 L116 68 L90 106 L50 94 Z" fill="#fff8e2" stroke="#1a1408" stroke-width="4.5" stroke-linejoin="miter"/>
+  <!-- fold facets -->
+  <path d="M72 26 L78 68 L116 68 Z" fill="#e8dcc0" stroke="#1a1408" stroke-width="2.6" stroke-linejoin="miter"/>
+  <path d="M78 68 L90 106 L50 94 Z" fill="#1a1408" opacity="0.85"/>
+  <path d="M42 50 L78 68 L50 94 Z" fill="#fff8e2" stroke="#1a1408" stroke-width="2.6" stroke-linejoin="miter"/>
+  <!-- ink accent marks -->
+  <path d="M88 46 l10 -8 M94 58 l12 -6" stroke="#1a1408" stroke-width="3.6" stroke-linecap="square"/>
+  <!-- speed chevrons -->
+  <path d="M8 106 l10 -8 M22 112 l10 -8" stroke="#1a1408" stroke-width="3.6" stroke-linecap="square"/>
+</svg>
