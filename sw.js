@@ -1,4 +1,6 @@
-// nila-app shell service worker - v27 (hotfix train item 5: unpaired doors-only picker + demo entry re-entry + get-kids backoff; item 4 below: v24 item 6c welcome hero-fit fold + synthetic fixtures; v23 item 6b phone clamp; v22 item 6a colour-mix tiles asset-only, sw untouched; v21 item 2 shelf TV layout + picker two-up; v20 item 3 picker uniform; v19 item 1 worldpick; v11 lineage below)
+// nila-app shell service worker - v28 (D11 Branch A sw-hardening: integrity-pinned
+// shell install + network-first navigation + grace bundle + gate simulation;
+// v27 hotfix train item 5; PICKER-fix v1.2 deploy bump; v9 fixes below)
 // Fixes the v8 launch blockers found by test-eng + the local swlab harness:
 //  - v8's retired check compared registration.active to self (the global
 //    scope) - ALWAYS true, so v8 passed every fetch to the network and never
@@ -11,7 +13,7 @@
 //    retired cache (page or old worker) can never serve bytes.
 //  - retired-cache cleanup re-runs on navigations only when the census is
 //    dirty (bounded: one keys() call per navigation once healthy).
-const VERSION = 27;
+const VERSION = 28;
 const SHELL = `nila-shell-v${VERSION}`;
 
 const ASSET_INTEGRITY = {
@@ -51,6 +53,11 @@ const ASSET_INTEGRITY = {
     "5a372d9dd5621ed8184a3775b9a84b84b974f7967f0fbc3277ce69e073ff76b5",
 };
 
+// Stamped at deploy (D11 Branch A slice 1): exact sha256 of THIS deploy's
+// index.html. The html gap ASSET_INTEGRITY never covered: js/css were
+// pinned, the shell itself was not.
+const SHELL_INTEGRITY = "7704768224e4a85f15dd200d55603fde0ba23667ea9499da123d6b3bb840072c";
+
 function shellVersion(key) {
   const m = /^nila-shell-v(\d+)$/.exec(key);
   return m ? Number(m[1]) : 0;
@@ -81,8 +88,30 @@ async function cleanupRetired() {
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
+      // D11 Branch A slice 1: integrity-pinned shell install. Hash the actual
+      // served bytes and REFUSE to install on mismatch - an install inside
+      // the Pages propagation window must never pin a stale index.html as the
+      // new version's shell (v18 gate incident, 2026-09-26 13:19-13:24). The
+      // throw fails the install: the old worker keeps serving its consistent
+      // shell and the browser retries on a later update check, once the edge
+      // serves the new bytes. Deterministic failure, never a pinned lie.
+      const res = await fetch("./index.html");
+      if (!res.ok) throw new Error(`shell fetch failed: ${res.status}`);
+      const bytes = await res.arrayBuffer();
+      if ((await sha256Hex(bytes)) !== SHELL_INTEGRITY) {
+        throw new Error("shell integrity mismatch - refusing to pin a stale shell");
+      }
       const cache = await caches.open(SHELL);
-      await cache.addAll(["./", "./index.html"]);
+      const headers = { "content-type": "text/html; charset=utf-8" };
+      await cache.put("./index.html", new Response(bytes.slice(0), { headers }));
+      await cache.put("./", new Response(bytes.slice(0), { headers }));
+      // Prove the write landed before the event may finish (serveAsset
+      // discipline): read back and re-hash.
+      const written = await cache.match("./index.html");
+      if (!written || (await sha256Hex(await written.arrayBuffer())) !== SHELL_INTEGRITY) {
+        await caches.delete(SHELL);
+        throw new Error("shell cache write failed verification");
+      }
       await self.skipWaiting();
     })(),
   );
@@ -127,13 +156,6 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
   event.respondWith(
     (async () => {
-      // P1 boot-blank work order (PM admission 2026-09-26 05:00 IST): preview
-      // navigations pass straight to network. The navigate branch below serves
-      // the prod shell for EVERY in-scope navigation, which made previews and
-      // the preview-scoped diag page unreachable on prod-carrying clients.
-      if (event.request.mode === "navigate" && url.pathname.startsWith("/nila-app/preview/")) {
-        return fetch(event.request);
-      }
       // Retired pass-through: only when a newer worker is actually in the
       // pipeline AND has already built its shell. A lone future-version cache
       // (page-created) is dirty census, not a takeover - we keep serving and
@@ -142,6 +164,13 @@ self.addEventListener("fetch", (event) => {
         (self.registration.installing || self.registration.waiting) &&
         (await newerShellExists())
       ) {
+        return fetch(event.request);
+      }
+      // P1 boot-blank work order (PM admission 2026-09-26 05:00 IST): preview
+      // navigations pass straight to network. The navigate branch below serves
+      // the prod shell for EVERY in-scope navigation, which made previews and
+      // the preview-scoped diag page unreachable on prod-carrying clients.
+      if (event.request.mode === "navigate" && url.pathname.startsWith("/nila-app/preview/")) {
         return fetch(event.request);
       }
       if (event.request.mode === "navigate") {
@@ -155,11 +184,29 @@ self.addEventListener("fetch", (event) => {
             }
           })(),
         );
+        // D11 Branch A slice 3: network-first with verified-shell fallback.
+        // Cache-first is what let a stale index.html run indefinitely.
+        // Network bytes win ONLY when they hash to this version's stamped
+        // shell: a stale edge answer (propagation window) or any other
+        // document (e.g. the parent surface) falls back to the verified
+        // cached shell, preserving today's consistent-shell semantics.
+        // Offline falls back the same way.
         const cache = await caches.open(SHELL);
+        try {
+          const res = await fetch(event.request);
+          if (
+            res.ok &&
+            (await sha256Hex(await res.clone().arrayBuffer())) === SHELL_INTEGRITY
+          ) {
+            await cache.put("./index.html", res.clone());
+            return res;
+          }
+        } catch {
+          // offline: fall through to the verified cached shell
+        }
         return (await cache.match("./index.html")) || fetch(event.request);
       }
       return serveAsset(event, url, integrityKey(url));
     })(),
   );
 });
-
